@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "859648429223",
+    "firebase_url": "https://flutter-crud-app-2be55-default-rtdb.firebaseio.com",
+    "project_id": "flutter-crud-app-2be55",
+    "storage_bucket": "flutter-crud-app-2be55.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:859648429223:android:ee9ef22138c67d69f79f82",
+        "android_client_info": {
+          "package_name": "com.nonodoco.flutter_app_crud_firebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "859648429223-m8682k759js04u7c5v77a87ena1o715k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuu_B33jaiDTh0SukaALOUQ6im0IMUSyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "859648429223-m8682k759js04u7c5v77a87ena1o715k.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "859648429223-8s326fussm85nkcpkcg56b89o0agrm8e.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nonodoco.flutterappcrudfirebase"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
