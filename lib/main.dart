@@ -25,6 +25,11 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
+  var txtStudentName = TextEditingController();
+  var txtStudentId = TextEditingController();
+  var txtStudyProgramId = TextEditingController();
+  var txtStudentGPA = TextEditingController();
+
   String studentName, studentId, studyProgramId;
   double studentGPA;
 
@@ -48,15 +53,25 @@ class _MyAppState extends State<MyApp> {
     await Firebase.initializeApp();
     print("Create");
     DocumentReference documentReference = FirebaseFirestore.instance.
-    collection("MyStudents").doc(studentName);
+    collection("MyStudents").doc(studentId);
 
-    Map<String, dynamic> students = {
-      "studentName": studentName,
-      "studentID": studentId,
-      "studentProgramID": studyProgramId,
-      "studentGPA":studentGPA
-    };
-    documentReference.set(students).whenComplete(() => {
+    if(studentName == null || studentGPA == null || studyProgramId == null || studentId == null){
+      Fluttertoast.showToast(
+        msg: "Pls Input Data !",
+        toastLength: Toast.LENGTH_SHORT,
+        textColor: Colors.white,
+        fontSize: 16,
+        backgroundColor: Colors.black,
+      );
+    }else{
+      Map<String, dynamic> students = {
+        "studentName": studentName,
+        "studentID": studentId,
+        "studentProgramID": studyProgramId,
+        "studentGPA":studentGPA
+      };
+
+      documentReference.set(students).whenComplete(() => {
         Fluttertoast.showToast(
           msg: "$studentName has created successful.",
           toastLength: Toast.LENGTH_SHORT,
@@ -64,63 +79,91 @@ class _MyAppState extends State<MyApp> {
           fontSize: 16,
           backgroundColor: Colors.black,
         )
-    });
-
+      });
+    }
   }
 
-  readData(String name) async {
+  readData(dynamic obj) async {
     await Firebase.initializeApp();
     DocumentReference documentReference = FirebaseFirestore.instance.
-    collection("MyStudents").doc(name);
+    collection("MyStudents").doc(obj["studentID"]);
 
     await documentReference.get().then<dynamic>((DocumentSnapshot snapshot) async {
-      print(snapshot.data());
       setState(() {
-        studentName = 'updated text';
+        txtStudentName.text = obj["studentName"];
+        txtStudentGPA.text = obj["studentGPA"].toString();
+        txtStudentId.text = obj["studentID"];
+        txtStudyProgramId.text = obj["studentProgramID"];
+        studentId = obj["studentID"];
       });
     });
-
-    print(studentName);
-
   }
 
   updateData() async {
     await Firebase.initializeApp();
     print("update");
     DocumentReference documentReference = FirebaseFirestore.instance.
-    collection("MyStudents").doc(studentName);
+    collection("MyStudents").doc(studentId);
 
-    Map<String, dynamic> students = {
-      "studentName": studentName,
-      "studentID": studentId,
-      "studentProgramID": studyProgramId,
-      "studentGPA":studentGPA
-    };
-    documentReference.set(students).whenComplete(() => {
+    if(studentId == null){
       Fluttertoast.showToast(
-        msg: "$studentName has update successful.",
+        msg: "Pls Select Student !",
         toastLength: Toast.LENGTH_SHORT,
         textColor: Colors.white,
         fontSize: 16,
         backgroundColor: Colors.black,
-      )
-    });
+      );
+    }else{
+      Map<String, dynamic> students = {
+        "studentName": studentName,
+        "studentID": studentId,
+        "studentProgramID": studyProgramId,
+        "studentGPA":studentGPA
+      };
+
+      documentReference.set(students).whenComplete(() => {
+        Fluttertoast.showToast(
+          msg: "$studentName has created successful.",
+          toastLength: Toast.LENGTH_SHORT,
+          textColor: Colors.white,
+          fontSize: 16,
+          backgroundColor: Colors.black,
+        )
+      });
+    }
   }
 
   deleteData() async {
     await Firebase.initializeApp();
     DocumentReference documentReference = FirebaseFirestore.instance.
-    collection("MyStudents").doc(studentName);
+    collection("MyStudents").doc(studentId);
 
-    documentReference.delete().whenComplete(() => {
+    if(studentId != null){
+      documentReference.delete().whenComplete(() => {
+        Fluttertoast.showToast(
+          msg: "$studentName has delete successful.",
+          toastLength: Toast.LENGTH_SHORT,
+          textColor: Colors.white,
+          fontSize: 16,
+          backgroundColor: Colors.black,
+        ),
+        setState(() {
+          txtStudentName.text = "";
+          txtStudentGPA.text = "";
+          txtStudentId.text = "";
+          txtStudyProgramId.text = "";
+          studentId = null;
+        })
+      });
+    }else{
       Fluttertoast.showToast(
-        msg: "$studentName has delete successful.",
+        msg: "Pls Select Student !",
         toastLength: Toast.LENGTH_SHORT,
         textColor: Colors.white,
         fontSize: 16,
         backgroundColor: Colors.black,
-      )
-    });
+      );
+    }
   }
 
   @override
@@ -146,7 +189,7 @@ class _MyAppState extends State<MyApp> {
                 onChanged: (String name){
                   getStudentName(name);
                 },
-                initialValue: studentName,
+                controller: txtStudentName,
               ),
             ),
 
@@ -163,6 +206,7 @@ class _MyAppState extends State<MyApp> {
                 onChanged: (String id){
                   getStudentID(id);
                 },
+                controller: txtStudentId,
               ),
             ),
 
@@ -179,6 +223,7 @@ class _MyAppState extends State<MyApp> {
                 onChanged: (String programId){
                   getStudentProgramId(programId);
                 },
+                controller: txtStudyProgramId,
               ),
             ),
 
@@ -195,6 +240,7 @@ class _MyAppState extends State<MyApp> {
                 onChanged: (String gpa){
                   getStudentGPA(gpa);
                 },
+                controller: txtStudentGPA,
               ),
             ),
 
@@ -277,14 +323,11 @@ class _MyAppState extends State<MyApp> {
                                   Expanded(child: Text(list[index]["studentGPA"].toString()),flex: 1)
                                 ],
                               ),
-                              onTap: () => {
-                                readData(list[index]["studentName"])
-                              }
+                              onTap: () => readData(list[index]),
                             ),
                           );
                         },
                         itemCount: list.length,
-
                       );
                     }
                   },
